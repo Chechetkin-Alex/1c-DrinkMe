@@ -80,3 +80,37 @@ DrinkMe -- сервис для заказа кофе, выпечки и това
 - [База данных](docs/database.md)
 - [REST API](docs/api.md)
 
+## Локальный запуск бэкенда
+
+Создать окружение:
+
+```bash
+python3 -m venv .venv
+```
+
+Установить зависимости:
+
+```bash
+.venv/bin/python -m pip install -r backend/requirements.txt
+```
+
+Проверить проект:
+
+```bash
+cd backend
+../.venv/bin/python manage.py check
+```
+
+Применить миграции:
+
+```bash
+cd backend
+../.venv/bin/python manage.py migrate
+```
+
+Запустить сервер:
+
+```bash
+cd backend
+../.venv/bin/python manage.py runserver
+```
