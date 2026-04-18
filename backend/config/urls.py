@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -17,5 +17,5 @@ def api_root(request):
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", api_root, name="api-root"),
+    path("api/", include("apps.catalog.urls")),
 ]
-

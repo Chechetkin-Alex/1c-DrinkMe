@@ -37,9 +37,11 @@ DELETE /api/products/{id}/
 
 ```
 ?category=coffee
-?type=beans
-?search=ethiopia
+?type=drink
+?search=латте
 ```
+
+Создавать и менять товары может только администратор.
 
 ## Корзина
 

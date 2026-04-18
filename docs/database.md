@@ -50,6 +50,7 @@ erDiagram
         decimal price
         int stock
         bool is_active
+        bool is_student_special
     }
 
     CART {
@@ -99,6 +100,7 @@ erDiagram
 Планируемые типы товаров:
 
 - `drink` - напиток
+- `bakery` - выпечка
 - `beans` - зерна
 - `equipment` - аксессуар
 - `machine_part` - деталь для кофемашины
