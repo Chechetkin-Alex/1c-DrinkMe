@@ -53,7 +53,7 @@ class CatalogApiTest(APITestCase):
             format="json",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_admin_can_create_product(self):
         user = get_user_model().objects.create_superuser(

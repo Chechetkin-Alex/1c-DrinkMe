@@ -59,6 +59,7 @@ DrinkMe -- сервис для заказа кофе, выпечки и това
 ## Планируемый стек
 
 - Бэкенд: Python, Django, Django REST Framework
+- Авторизация: токены Django REST Framework
 - PostgreSQL для финального запуска
 - Фронтенд: React, Vite, React Router
 - Управление состоянием: Context API или Zustand

@@ -11,6 +11,12 @@ POST /api/auth/logout/
 GET  /api/auth/me/
 ```
 
+Регистрация и вход возвращают токен. Фронт отправляет его в заголовке:
+
+```text
+Authorization: Token <token>
+```
+
 ## Категории
 
 ```
