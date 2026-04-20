@@ -76,10 +76,12 @@ DELETE /api/cart/clear/
 GET   /api/orders/
 POST  /api/orders/
 GET   /api/orders/{id}/
-PATCH /api/orders/{id}/status/
+PATCH /api/orders/{id}/
 ```
 
 `POST /api/orders/` создает заказ из текущей корзины.
+
+Пользователь видит только свои заказы. Администратор видит все заказы и может менять статус.
 
 Пример ответа:
 
