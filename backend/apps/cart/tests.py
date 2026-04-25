@@ -59,6 +59,22 @@ class CartApiTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["total_price"], "500.00")
 
+    def test_user_can_choose_milk_type(self):
+        self.client.force_authenticate(self.user)
+
+        response = self.client.post(
+            "/api/cart/items/",
+            {
+                "product_id": self.product.id,
+                "quantity": 1,
+                "milk_type": "coconut",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["milk_type"], "coconut")
+
     def test_cannot_add_more_than_stock(self):
         self.client.force_authenticate(self.user)
 

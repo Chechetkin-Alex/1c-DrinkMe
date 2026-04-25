@@ -33,6 +33,7 @@ def create_order_from_cart(user):
                 product_name=product.name,
                 price=product.price,
                 quantity=item.quantity,
+                milk_type=item.milk_type,
             )
         )
         product.stock -= item.quantity

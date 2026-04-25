@@ -32,6 +32,15 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    class MilkType(models.TextChoices):
+        REGULAR = "regular", "Regular"
+        ALTERNATIVE = "alternative", "Alternative"
+        OAT = "oat", "Oat"
+        COCONUT = "coconut", "Coconut"
+        BANANA = "banana", "Banana"
+        ALMOND = "almond", "Almond"
+        NONE = "none", "No milk"
+
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
@@ -45,6 +54,11 @@ class OrderItem(models.Model):
     product_name = models.CharField(max_length=160)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     quantity = models.PositiveIntegerField()
+    milk_type = models.CharField(
+        max_length=30,
+        choices=MilkType.choices,
+        default=MilkType.REGULAR,
+    )
 
     class Meta:
         ordering = ["id"]

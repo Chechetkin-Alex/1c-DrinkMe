@@ -66,9 +66,20 @@ DELETE /api/cart/clear/
 ```json
 {
   "product_id": 1,
-  "quantity": 2
+  "quantity": 2,
+  "milk_type": "oat"
 }
 ```
+
+Для напитков можно передать тип молока:
+
+- `regular` - обычное
+- `alternative` - альтернативное
+- `oat` - овсяное
+- `coconut` - кокосовое
+- `banana` - банановое
+- `almond` - миндальное
+- `none` - без молока
 
 ## Заказы
 

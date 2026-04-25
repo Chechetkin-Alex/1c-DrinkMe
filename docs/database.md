@@ -65,6 +65,7 @@ erDiagram
         int cart_id
         int product_id
         int quantity
+        string milk_type
     }
 
     ORDER {
@@ -83,6 +84,7 @@ erDiagram
         string product_name
         decimal price
         int quantity
+        string milk_type
     }
 
     REVIEW {

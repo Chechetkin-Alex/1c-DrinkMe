@@ -12,7 +12,15 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ["id", "product", "product_name", "price", "quantity", "subtotal"]
+        fields = [
+            "id",
+            "product",
+            "product_name",
+            "price",
+            "quantity",
+            "milk_type",
+            "subtotal",
+        ]
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -29,4 +37,3 @@ class OrderSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         read_only_fields = ["total_price", "items", "created_at", "updated_at"]
-

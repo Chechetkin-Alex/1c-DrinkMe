@@ -30,13 +30,14 @@ class OrdersApiTest(APITestCase):
 
     def test_user_can_create_order_from_cart(self):
         cart = get_or_create_cart(self.user)
-        add_product_to_cart(cart, self.product, 2)
+        add_product_to_cart(cart, self.product, 2, milk_type="oat")
         self.client.force_authenticate(self.user)
 
         response = self.client.post("/api/orders/")
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["total_price"], "500.00")
+        self.assertEqual(response.data["items"][0]["milk_type"], "oat")
         self.assertEqual(Order.objects.count(), 1)
         self.assertEqual(OrderItem.objects.count(), 1)
 

@@ -20,7 +20,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItem
-        fields = ["id", "product", "product_id", "quantity", "subtotal"]
+        fields = ["id", "product", "product_id", "quantity", "milk_type", "subtotal"]
 
     def validate_quantity(self, value):
         if value < 1:

@@ -1,0 +1,2 @@
+"""Catalog management commands package."""
+

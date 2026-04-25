@@ -22,6 +22,15 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
+    class MilkType(models.TextChoices):
+        REGULAR = "regular", "Regular"
+        ALTERNATIVE = "alternative", "Alternative"
+        OAT = "oat", "Oat"
+        COCONUT = "coconut", "Coconut"
+        BANANA = "banana", "Banana"
+        ALMOND = "almond", "Almond"
+        NONE = "none", "No milk"
+
     cart = models.ForeignKey(
         Cart,
         on_delete=models.CASCADE,
@@ -33,13 +42,18 @@ class CartItem(models.Model):
         related_name="cart_items",
     )
     quantity = models.PositiveIntegerField(default=1)
+    milk_type = models.CharField(
+        max_length=30,
+        choices=MilkType.choices,
+        default=MilkType.REGULAR,
+    )
 
     class Meta:
-        unique_together = ("cart", "product")
+        unique_together = ("cart", "product", "milk_type")
         ordering = ["id"]
 
     def __str__(self):
-        return f"{self.product.name} x {self.quantity}"
+        return f"{self.product.name} x {self.quantity}, milk: {self.milk_type}"
 
     @property
     def subtotal(self):

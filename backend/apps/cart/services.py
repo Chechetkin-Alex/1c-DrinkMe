@@ -8,13 +8,14 @@ def get_or_create_cart(user):
     return cart
 
 
-def add_product_to_cart(cart, product, quantity):
+def add_product_to_cart(cart, product, quantity, milk_type=CartItem.MilkType.REGULAR):
     if quantity > product.stock:
         raise serializers.ValidationError("На складе нет такого количества товара")
 
     item, created = CartItem.objects.get_or_create(
         cart=cart,
         product=product,
+        milk_type=milk_type,
         defaults={"quantity": quantity},
     )
     if not created:

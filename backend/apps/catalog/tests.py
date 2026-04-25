@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from rest_framework.test import APITestCase
 
 from apps.catalog.models import Category, Product
@@ -78,3 +79,14 @@ class CatalogApiTest(APITestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Product.objects.count(), 2)
+
+
+class SeedDemoCommandTest(APITestCase):
+    def test_seed_demo_creates_products_and_admin(self):
+        call_command("seed_demo")
+
+        self.assertTrue(Product.objects.filter(slug="latte").exists())
+        self.assertTrue(Product.objects.filter(slug="student-combo").exists())
+        self.assertTrue(
+            get_user_model().objects.filter(username="admin", is_staff=True).exists()
+        )
