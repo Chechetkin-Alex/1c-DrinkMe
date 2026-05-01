@@ -29,12 +29,18 @@ button:hover {
 }
 
 input,
-select {
+select,
+textarea {
   width: 100%;
   border: 1px solid #d6d0c8;
   border-radius: 6px;
   padding: 10px 12px;
   background: #ffffff;
+}
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
 }
 
 a {
@@ -154,10 +160,13 @@ p {
 
 .product-card,
 .order-card,
+.review-card,
+.review-form,
 .auth-panel,
 .empty,
 .list-row,
-.summary {
+.summary,
+.buy-panel {
   border: 1px solid #ded8cf;
   border-radius: 8px;
   background: #ffffff;
@@ -186,6 +195,7 @@ p {
 }
 
 .card-bottom,
+.card-actions,
 .summary,
 .order-title,
 .list-row,
@@ -196,6 +206,40 @@ p {
   gap: 16px;
 }
 
+.card-actions {
+  gap: 8px;
+}
+
+.secondary-link,
+.back-link {
+  color: #2f6f5e;
+  font-weight: 700;
+}
+
+.product-detail {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.buy-panel,
+.review-form {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.buy-panel strong {
+  font-size: 24px;
+}
+
+.reviews-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+}
+
 .list {
   display: grid;
   gap: 12px;
@@ -204,6 +248,7 @@ p {
 .list-row,
 .summary,
 .order-card,
+.review-card,
 .auth-panel,
 .empty {
   padding: 16px;
@@ -225,6 +270,15 @@ p {
 
 .order-card small {
   color: #615b53;
+}
+
+.review-card {
+  display: grid;
+  gap: 6px;
+}
+
+.review-card p {
+  margin-bottom: 0;
 }
 
 .auth-panel {
@@ -269,6 +323,11 @@ p {
     grid-template-columns: 1fr;
   }
 
+  .product-detail,
+  .reviews-layout {
+    grid-template-columns: 1fr;
+  }
+
   .section-head,
   .list-row,
   .summary {
@@ -276,4 +335,3 @@ p {
     flex-direction: column;
   }
 }
-

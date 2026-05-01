@@ -15,3 +15,6 @@ export function getProducts(params = {}) {
   return apiRequest(`/products/${query ? `?${query}` : ''}`)
 }
 
+export function getProduct(id) {
+  return apiRequest(`/products/${id}/`)
+}

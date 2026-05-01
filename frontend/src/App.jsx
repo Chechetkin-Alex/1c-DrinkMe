@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Route, Routes, useNavigate, useParams } from 'react-router-dom'
 
 import { getMe, login, logout, register } from './api/auth.js'
 import { addCartItem, deleteCartItem, getCart } from './api/cart.js'
-import { getCategories, getProducts } from './api/catalog.js'
+import { getCategories, getProduct, getProducts } from './api/catalog.js'
 import { createOrder, getOrders } from './api/orders.js'
 import { getToken } from './api/client.js'
+import { createProductReview, getProductReviews } from './api/reviews.js'
 
 const milkOptions = [
   ['regular', 'обычное'],
@@ -67,6 +68,7 @@ export function App() {
       <main className="page">
         <Routes>
           <Route path="/" element={<CatalogPage user={user} />} />
+          <Route path="/products/:id" element={<ProductPage user={user} />} />
           <Route path="/cart" element={<CartPage user={user} />} />
           <Route path="/orders" element={<OrdersPage user={user} />} />
           <Route path="/login" element={<AuthPage onAuth={setUser} />} />
@@ -144,11 +146,149 @@ function CatalogPage({ user }) {
             <p>{product.description || 'Описание появится позже'}</p>
             <div className="card-bottom">
               <strong>{product.price} ₽</strong>
-              <button onClick={() => addToCart(product)}>В корзину</button>
+              <div className="card-actions">
+                <Link className="secondary-link" to={`/products/${product.id}`}>Открыть</Link>
+                <button onClick={() => addToCart(product)}>В корзину</button>
+              </div>
             </div>
             {product.is_student_special && <span className="special">студенческое комбо</span>}
           </article>
         ))}
+      </div>
+    </section>
+  )
+}
+
+function ProductPage({ user }) {
+  const { id } = useParams()
+  const [product, setProduct] = useState(null)
+  const [reviews, setReviews] = useState([])
+  const [milkType, setMilkType] = useState('regular')
+  const [reviewForm, setReviewForm] = useState({
+    rating: 5,
+    text: ''
+  })
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    getProduct(id).then(setProduct)
+    getProductReviews(id).then(setReviews)
+  }, [id])
+
+  async function addToCart() {
+    if (!user) {
+      setError('Сначала войдите в аккаунт')
+      return
+    }
+
+    await addCartItem({
+      product_id: product.id,
+      quantity: 1,
+      milk_type: product.product_type === 'drink' ? milkType : 'none'
+    })
+    setMessage('Товар добавлен в корзину')
+    setError('')
+  }
+
+  async function submitReview(event) {
+    event.preventDefault()
+    if (!user) {
+      setError('Сначала войдите в аккаунт')
+      return
+    }
+
+    try {
+      await createProductReview(id, {
+        rating: Number(reviewForm.rating),
+        text: reviewForm.text
+      })
+      setReviews(await getProductReviews(id))
+      setReviewForm({ rating: 5, text: '' })
+      setMessage('Отзыв добавлен')
+      setError('')
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  if (!product) {
+    return <div>Загрузка</div>
+  }
+
+  return (
+    <section>
+      <Link className="back-link" to="/">Назад в каталог</Link>
+      <div className="product-detail">
+        <div>
+          <div className="product-type">{product.category.name}</div>
+          <h1>{product.name}</h1>
+          <p>{product.description || 'Описание появится позже'}</p>
+          {product.is_student_special && <span className="special">студенческое комбо</span>}
+        </div>
+
+        <aside className="buy-panel">
+          <strong>{product.price} ₽</strong>
+          {product.product_type === 'drink' && (
+            <label>
+              Молоко
+              <select value={milkType} onChange={(event) => setMilkType(event.target.value)}>
+                {milkOptions.map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+            </label>
+          )}
+          <button onClick={addToCart}>В корзину</button>
+        </aside>
+      </div>
+
+      {message && <div className="notice">{message}</div>}
+      {error && <div className="error">{error}</div>}
+
+      <div className="reviews-layout">
+        <section>
+          <h2>Отзывы</h2>
+          {reviews.length === 0 ? (
+            <p>Отзывов пока нет</p>
+          ) : (
+            <div className="list">
+              {reviews.map((review) => (
+                <div className="review-card" key={review.id}>
+                  <strong>{review.username}</strong>
+                  <span>{review.rating} из 5</span>
+                  <p>{review.text || 'Без текста'}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <form className="review-form" onSubmit={submitReview}>
+          <h2>Оставить отзыв</h2>
+          <select
+            value={reviewForm.rating}
+            onChange={(event) => setReviewForm((current) => ({
+              ...current,
+              rating: event.target.value
+            }))}
+          >
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+          </select>
+          <textarea
+            placeholder="Текст отзыва"
+            value={reviewForm.text}
+            onChange={(event) => setReviewForm((current) => ({
+              ...current,
+              text: event.target.value
+            }))}
+          />
+          <button type="submit">Отправить</button>
+        </form>
       </div>
     </section>
   )
@@ -332,4 +472,3 @@ function EmptyState({ title, text }) {
 function milkLabel(value) {
   return milkOptions.find(([key]) => key === value)?.[1] || value
 }
-
