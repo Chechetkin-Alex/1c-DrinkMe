@@ -80,6 +80,8 @@ DrinkMe -- сервис для заказа кофе, выпечки и това
 - [Архитектура](docs/architecture.md)
 - [База данных](docs/database.md)
 - [REST API](docs/api.md)
+- [Сценарий демонстрации](docs/demo.md)
+- [Подготовка к защите](docs/defense.md)
 
 ## Локальный запуск бэкенда
 
@@ -124,3 +126,79 @@ cd backend
 ```
 
 После этого в админку можно войти с логином `admin` и паролем `222333`.
+
+## Локальный запуск фронтенда
+
+Установить зависимости:
+
+```bash
+cd frontend
+npm install
+```
+
+Запустить фронтенд:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Фронтенд будет доступен по адресу:
+
+```text
+http://127.0.0.1:5173/
+```
+
+Для работы фронтенда должен быть запущен бэкенд на `http://127.0.0.1:8000/`.
+
+## Быстрая проверка
+
+Проверить бэкенд:
+
+```bash
+cd backend
+../.venv/bin/python -m pytest
+```
+
+Проверить сборку фронтенда:
+
+```bash
+cd frontend
+npm run build
+```
+
+## Минимальный прод-запуск бэкенда
+
+Для простого хостинга бэкенда используются переменные окружения:
+
+- `DJANGO_SECRET_KEY`
+- `DJANGO_DEBUG`
+- `DJANGO_ALLOWED_HOSTS`
+- `DJANGO_SECURE_SSL_REDIRECT`
+- `DJANGO_SESSION_COOKIE_SECURE`
+- `DJANGO_CSRF_COOKIE_SECURE`
+- `DJANGO_SECURE_HSTS_SECONDS`
+- `DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS`
+- `DJANGO_SECURE_HSTS_PRELOAD`
+
+Пример:
+
+```bash
+DJANGO_SECRET_KEY=change-me
+DJANGO_DEBUG=0
+DJANGO_ALLOWED_HOSTS=example.com
+```
+
+Команда запуска для платформ, которые читают `Procfile`:
+
+```text
+web: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+```
+
+Перед запуском на хостинге нужно выполнить:
+
+```bash
+python manage.py migrate
+python manage.py seed_demo
+python manage.py collectstatic --noinput
+```

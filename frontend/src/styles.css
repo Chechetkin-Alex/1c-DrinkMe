@@ -199,7 +199,8 @@ p {
 .summary,
 .order-title,
 .list-row,
-.row-actions {
+.row-actions,
+.stepper {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -261,6 +262,26 @@ p {
 
 .row-actions {
   flex-shrink: 0;
+}
+
+.stepper {
+  overflow: hidden;
+  border: 1px solid #d6d0c8;
+  border-radius: 6px;
+  gap: 0;
+}
+
+.stepper button {
+  min-width: 34px;
+  border-radius: 0;
+  padding: 8px;
+  color: #2d332f;
+  background: #ece7df;
+}
+
+.stepper span {
+  min-width: 34px;
+  text-align: center;
 }
 
 .order-card {

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, NavLink, Route, Routes, useNavigate, useParams } from 'react-router-dom'
 
 import { getMe, login, logout, register } from './api/auth.js'
-import { addCartItem, deleteCartItem, getCart } from './api/cart.js'
+import { addCartItem, deleteCartItem, getCart, updateCartItem } from './api/cart.js'
 import { getCategories, getProduct, getProducts } from './api/catalog.js'
 import { createOrder, getOrders } from './api/orders.js'
 import { getToken } from './api/client.js'
@@ -297,6 +297,7 @@ function ProductPage({ user }) {
 function CartPage({ user }) {
   const [cart, setCart] = useState(null)
   const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
 
   useEffect(() => {
     if (user) {
@@ -309,10 +310,30 @@ function CartPage({ user }) {
     setCart(await getCart())
   }
 
+  async function changeQuantity(item, quantity) {
+    setError('')
+    if (quantity < 1) {
+      await removeItem(item.id)
+      return
+    }
+
+    try {
+      await updateCartItem(item.id, { quantity })
+      setCart(await getCart())
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
   async function checkout() {
-    const order = await createOrder()
-    setCart(await getCart())
-    setMessage(`Заказ №${order.id} создан`)
+    setError('')
+    try {
+      const order = await createOrder()
+      setCart(await getCart())
+      setMessage(`Заказ №${order.id} создан`)
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
   if (!user) {
@@ -327,6 +348,7 @@ function CartPage({ user }) {
         <h1>Корзина</h1>
       </div>
       {message && <div className="notice">{message}</div>}
+      {error && <div className="error">{error}</div>}
       {items.length === 0 ? (
         <EmptyState title="Корзина пустая" text="Добавьте кофе или выпечку из каталога" />
       ) : (
@@ -339,6 +361,11 @@ function CartPage({ user }) {
                   <p>{item.quantity} шт, молоко: {milkLabel(item.milk_type)}</p>
                 </div>
                 <div className="row-actions">
+                  <div className="stepper" aria-label="Количество">
+                    <button onClick={() => changeQuantity(item, item.quantity - 1)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => changeQuantity(item, item.quantity + 1)}>+</button>
+                  </div>
                   <span>{item.subtotal} ₽</span>
                   <button onClick={() => removeItem(item.id)}>Удалить</button>
                 </div>
@@ -373,22 +400,26 @@ function OrdersPage({ user }) {
       <div className="section-head">
         <h1>Заказы</h1>
       </div>
-      <div className="list">
-        {orders.map((order) => (
-          <div className="order-card" key={order.id}>
-            <div className="order-title">
-              <strong>Заказ №{order.id}</strong>
-              <span>{order.status}</span>
+      {orders.length === 0 ? (
+        <EmptyState title="Заказов пока нет" text="Оформите первый заказ из корзины" />
+      ) : (
+        <div className="list">
+          {orders.map((order) => (
+            <div className="order-card" key={order.id}>
+              <div className="order-title">
+                <strong>Заказ №{order.id}</strong>
+                <span>{order.status}</span>
+              </div>
+              <p>{order.total_price} ₽</p>
+              {order.items.map((item) => (
+                <small key={item.id}>
+                  {item.product_name} x {item.quantity}, {milkLabel(item.milk_type)}
+                </small>
+              ))}
             </div>
-            <p>{order.total_price} ₽</p>
-            {order.items.map((item) => (
-              <small key={item.id}>
-                {item.product_name} x {item.quantity}, {milkLabel(item.milk_type)}
-              </small>
-            ))}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   )
 }
