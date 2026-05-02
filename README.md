@@ -64,7 +64,7 @@ DrinkMe -- сервис для заказа кофе, выпечки и това
 - Фронтенд: React, Vite, React Router
 - Управление состоянием: Context API или Zustand
 - Тесты: pytest, pytest-django
-- Инструменты: Docker Compose, ruff/black по возможности
+- Инструменты: gunicorn, ruff/black по возможности
 
 ## Основные модули
 

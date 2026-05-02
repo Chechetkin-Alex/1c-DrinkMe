@@ -127,15 +127,17 @@ Review
 Типы товаров:
 ```
 drink
+bakery
 beans
-accessory
+equipment
 machine_part
 ```
 У заказа будут статусы:
 ```
 created
 paid
-preparing
+in_progress
+ready
 completed
 cancelled
 ```
@@ -173,7 +175,7 @@ cancelled
 
 Администратор может управлять товарами, категориями и заказами через Django admin.
 
-## Технический стэк из Django
+## Технический стек из Django
 
 В проекте используются:
 
@@ -183,7 +185,7 @@ cancelled
 - serializers
 - viewsets / API views
 - permissions
-- JWT-авторизация
+- авторизация по токену
 - тесты
 
 ## Тесты
@@ -196,4 +198,4 @@ cancelled
 - заказ создается из корзины
 - после создания заказа уменьшается остаток товара
 - пользователь не может смотреть чужие заказы
-- простые тесты sql инъекции
+- пользователь не может менять чужие отзывы
