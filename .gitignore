@@ -4,6 +4,8 @@
 .LSOverride
 
 docs/development-plan.md
+.idea/
+frontend/.vite/
 
 .venv/
 __pycache__/
