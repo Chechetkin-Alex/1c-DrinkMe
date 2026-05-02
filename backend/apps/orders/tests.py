@@ -19,6 +19,7 @@ class OrdersApiTest(APITestCase):
             name="Латте",
             slug="latte-orders",
             product_type=Product.ProductType.DRINK,
+            drink_size=Product.DrinkSize.SMALL,
             price="250.00",
             stock=3,
         )
@@ -66,3 +67,22 @@ class OrdersApiTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
+
+    def test_admin_can_change_order_status(self):
+        admin = get_user_model().objects.create_superuser(
+            username="admin",
+            email="admin@example.com",
+            password="strongpass123",
+        )
+        order = Order.objects.create(user=self.user, total_price="250.00")
+        self.client.force_authenticate(admin)
+
+        response = self.client.patch(
+            f"/api/orders/{order.id}/",
+            {"status": Order.Status.READY},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        order.refresh_from_db()
+        self.assertEqual(order.status, Order.Status.READY)

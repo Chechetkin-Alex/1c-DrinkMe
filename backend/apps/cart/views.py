@@ -28,6 +28,8 @@ class CartItemListView(APIView):
             quantity=serializer.validated_data["quantity"],
             milk_type=serializer.validated_data.get("milk_type")
             or CartItem.MilkType.REGULAR,
+            combo_drink=serializer.validated_data.get("combo_drink"),
+            combo_bakery=serializer.validated_data.get("combo_bakery"),
         )
         return Response(CartItemSerializer(item).data, status=status.HTTP_201_CREATED)
 

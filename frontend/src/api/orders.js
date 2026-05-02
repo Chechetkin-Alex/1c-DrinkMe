@@ -10,3 +10,9 @@ export function createOrder() {
   })
 }
 
+export function updateOrder(id, payload) {
+  return apiRequest(`/orders/${id}/`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload)
+  })
+}

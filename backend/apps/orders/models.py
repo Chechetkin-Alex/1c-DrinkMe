@@ -54,6 +54,8 @@ class OrderItem(models.Model):
     product_name = models.CharField(max_length=160)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     quantity = models.PositiveIntegerField()
+    combo_drink_name = models.CharField(max_length=160, blank=True)
+    combo_bakery_name = models.CharField(max_length=160, blank=True)
     milk_type = models.CharField(
         max_length=30,
         choices=MilkType.choices,

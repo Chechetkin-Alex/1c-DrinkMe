@@ -27,6 +27,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "slug",
             "description",
             "product_type",
+            "drink_size",
             "price",
             "stock",
             "is_active",
@@ -35,4 +36,3 @@ class ProductSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         read_only_fields = ["created_at", "updated_at"]
-

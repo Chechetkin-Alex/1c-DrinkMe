@@ -40,6 +40,17 @@ class ProductViewSet(viewsets.ModelViewSet):
         if product_type:
             queryset = queryset.filter(product_type=product_type)
         if search:
-            queryset = queryset.filter(name__icontains=search)
+            search_value = search.casefold()
+            product_ids = [
+                product_id
+                for product_id, name, description in queryset.values_list(
+                    "id",
+                    "name",
+                    "description",
+                )
+                if search_value in name.casefold()
+                or search_value in (description or "").casefold()
+            ]
+            queryset = queryset.filter(id__in=product_ids)
 
         return queryset

@@ -18,6 +18,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "product_name",
             "price",
             "quantity",
+            "combo_drink_name",
+            "combo_bakery_name",
             "milk_type",
             "subtotal",
         ]
@@ -25,11 +27,13 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
+    username = serializers.CharField(source="user.username", read_only=True)
 
     class Meta:
         model = Order
         fields = [
             "id",
+            "username",
             "status",
             "total_price",
             "items",

@@ -41,6 +41,20 @@ class CartItem(models.Model):
         on_delete=models.CASCADE,
         related_name="cart_items",
     )
+    combo_drink = models.ForeignKey(
+        "catalog.Product",
+        on_delete=models.SET_NULL,
+        related_name="combo_drink_cart_items",
+        blank=True,
+        null=True,
+    )
+    combo_bakery = models.ForeignKey(
+        "catalog.Product",
+        on_delete=models.SET_NULL,
+        related_name="combo_bakery_cart_items",
+        blank=True,
+        null=True,
+    )
     quantity = models.PositiveIntegerField(default=1)
     milk_type = models.CharField(
         max_length=30,
@@ -49,7 +63,13 @@ class CartItem(models.Model):
     )
 
     class Meta:
-        unique_together = ("cart", "product", "milk_type")
+        unique_together = (
+            "cart",
+            "product",
+            "milk_type",
+            "combo_drink",
+            "combo_bakery",
+        )
         ordering = ["id"]
 
     def __str__(self):

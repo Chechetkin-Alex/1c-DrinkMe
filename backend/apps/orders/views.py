@@ -12,7 +12,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "patch"]
 
     def get_queryset(self):
-        queryset = Order.objects.prefetch_related("items")
+        queryset = Order.objects.select_related("user").prefetch_related("items")
         if self.request.user.is_staff:
             return queryset
         return queryset.filter(user=self.request.user)

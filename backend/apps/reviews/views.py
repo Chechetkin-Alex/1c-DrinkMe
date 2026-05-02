@@ -1,6 +1,8 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
 
 from apps.catalog.models import Product
+from apps.orders.models import OrderItem
 from apps.reviews.models import Review
 from apps.reviews.serializers import ReviewSerializer
 
@@ -27,6 +29,31 @@ class ProductReviewListView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         product = Product.objects.get(id=self.kwargs["product_id"])
         serializer.save(user=self.request.user, product=product)
+
+    def create(self, request, *args, **kwargs):
+        product = Product.objects.get(id=self.kwargs["product_id"])
+        has_order = OrderItem.objects.filter(
+            order__user=request.user,
+            product=product,
+        ).exists()
+        if not has_order:
+            return Response(
+                {"detail": "Отзыв можно оставить только после покупки товара"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        existing_review = Review.objects.filter(
+            user=request.user,
+            product=product,
+        ).first()
+        serializer = self.get_serializer(
+            existing_review,
+            data=request.data,
+            partial=existing_review is not None,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user, product=product)
+        response_status = status.HTTP_200_OK if existing_review else status.HTTP_201_CREATED
+        return Response(serializer.data, status=response_status)
 
 
 class ReviewDetailView(generics.UpdateAPIView, generics.DestroyAPIView):

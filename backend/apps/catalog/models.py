@@ -22,6 +22,13 @@ class Product(models.Model):
         BEANS = "beans", "Beans"
         EQUIPMENT = "equipment", "Equipment"
         MACHINE_PART = "machine_part", "Machine part"
+        COMBO = "combo", "Combo"
+
+    class DrinkSize(models.TextChoices):
+        NONE = "none", "No size"
+        SMALL = "small", "Small"
+        MEDIUM = "medium", "Medium"
+        LARGE = "large", "Large"
 
     category = models.ForeignKey(
         Category,
@@ -32,6 +39,11 @@ class Product(models.Model):
     slug = models.SlugField(max_length=180, unique=True)
     description = models.TextField(blank=True)
     product_type = models.CharField(max_length=30, choices=ProductType.choices)
+    drink_size = models.CharField(
+        max_length=20,
+        choices=DrinkSize.choices,
+        default=DrinkSize.NONE,
+    )
     price = models.DecimalField(max_digits=8, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)

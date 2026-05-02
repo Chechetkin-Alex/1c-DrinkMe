@@ -40,6 +40,12 @@ class CatalogApiTest(APITestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["slug"], "latte")
 
+    def test_product_search_works_with_lowercase_russian_text(self):
+        response = self.client.get("/api/products/?search=лат")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0]["name"], "Латте")
+
     def test_guest_cannot_create_product(self):
         response = self.client.post(
             "/api/products/",
@@ -85,7 +91,8 @@ class SeedDemoCommandTest(APITestCase):
     def test_seed_demo_creates_products_and_admin(self):
         call_command("seed_demo")
 
-        self.assertTrue(Product.objects.filter(slug="latte").exists())
+        self.assertTrue(Product.objects.filter(slug="latte-small").exists())
+        self.assertTrue(Product.objects.filter(slug="cappuccino-small").exists())
         self.assertTrue(Product.objects.filter(slug="student-combo").exists())
         self.assertTrue(
             get_user_model().objects.filter(username="admin", is_staff=True).exists()

@@ -194,6 +194,17 @@ p {
   color: #6b6257;
 }
 
+.muted,
+.cart-counter {
+  font-size: 14px;
+  color: #69645d;
+}
+
+.combo-controls {
+  display: grid;
+  gap: 8px;
+}
+
 .card-bottom,
 .card-actions,
 .summary,

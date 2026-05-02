@@ -17,11 +17,12 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "is_phystech_student",
+            "is_staff",
         ]
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=8)
+    password = serializers.CharField(write_only=True, min_length=6)
 
     class Meta:
         model = User
@@ -44,4 +45,3 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Неверный логин или пароль")
         attrs["user"] = user
         return attrs
-

@@ -12,14 +12,37 @@ class CartApiTest(APITestCase):
             email="user@example.com",
             password="strongpass123",
         )
+        self.student = get_user_model().objects.create_user(
+            username="student",
+            email="student@phystech.edu",
+            password="strongpass123",
+        )
         category = Category.objects.create(name="Кофе", slug="coffee")
         self.product = Product.objects.create(
             category=category,
             name="Латте",
             slug="latte-cart",
             product_type=Product.ProductType.DRINK,
+            drink_size=Product.DrinkSize.SMALL,
             price="250.00",
             stock=3,
+        )
+        self.bakery = Product.objects.create(
+            category=Category.objects.create(name="Выпечка", slug="bakery-cart"),
+            name="Круассан",
+            slug="croissant-cart",
+            product_type=Product.ProductType.BAKERY,
+            price="180.00",
+            stock=3,
+        )
+        self.combo = Product.objects.create(
+            category=Category.objects.create(name="Комбо", slug="combo-cart"),
+            name="Студенческое комбо",
+            slug="student-combo-cart",
+            product_type=Product.ProductType.COMBO,
+            price="250.00",
+            stock=3,
+            is_student_special=True,
         )
 
     def test_cart_requires_auth(self):
@@ -83,6 +106,42 @@ class CartApiTest(APITestCase):
             {
                 "product_id": self.product.id,
                 "quantity": 4,
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_user_can_choose_combo_parts(self):
+        self.client.force_authenticate(self.student)
+
+        response = self.client.post(
+            "/api/cart/items/",
+            {
+                "product_id": self.combo.id,
+                "combo_drink_id": self.product.id,
+                "combo_bakery_id": self.bakery.id,
+                "quantity": 1,
+                "milk_type": "none",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["combo_drink"]["id"], self.product.id)
+        self.assertEqual(response.data["combo_bakery"]["id"], self.bakery.id)
+
+    def test_combo_requires_phystech_email(self):
+        self.client.force_authenticate(self.user)
+
+        response = self.client.post(
+            "/api/cart/items/",
+            {
+                "product_id": self.combo.id,
+                "combo_drink_id": self.product.id,
+                "combo_bakery_id": self.bakery.id,
+                "quantity": 1,
+                "milk_type": "none",
             },
             format="json",
         )
