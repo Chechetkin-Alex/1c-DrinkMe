@@ -82,6 +82,7 @@ DrinkMe -- сервис для заказа кофе, выпечки и това
 - [REST API](docs/api.md)
 - [Сценарий демонстрации](docs/demo.md)
 - [Подготовка к защите](docs/defense.md)
+- [Деплой](docs/deploy.md)
 
 ## Локальный запуск
 
@@ -225,6 +226,8 @@ npm run build
 - `DJANGO_SECRET_KEY`
 - `DJANGO_DEBUG`
 - `DJANGO_ALLOWED_HOSTS`
+- `DJANGO_CORS_ALLOWED_ORIGINS`
+- `DJANGO_CSRF_TRUSTED_ORIGINS`
 - `DATABASE_URL`
 - `DJANGO_SECURE_SSL_REDIRECT`
 - `DJANGO_SESSION_COOKIE_SECURE`
@@ -239,19 +242,27 @@ npm run build
 DJANGO_SECRET_KEY=change-me
 DJANGO_DEBUG=0
 DJANGO_ALLOWED_HOSTS=example.com
+DJANGO_CORS_ALLOWED_ORIGINS=https://frontend.example.com
+DJANGO_CSRF_TRUSTED_ORIGINS=https://backend.example.com,https://frontend.example.com
 DATABASE_URL=postgresql://user:password@host:5432/dbname
 ```
 
 Команда запуска для платформ, которые читают `Procfile`:
 
 ```text
-web: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+web: python manage.py migrate && python manage.py seed_demo && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
 ```
 
-Перед запуском на хостинге нужно выполнить:
+Для Render добавлен файл `render.yaml`. Он описывает:
 
-```bash
-python manage.py migrate
-python manage.py seed_demo
-python manage.py collectstatic --noinput
+- PostgreSQL-базу
+- Django web service
+- React static site
+
+Фронтенду на хостинге нужна переменная:
+
+```text
+VITE_API_BASE_URL=https://your-backend.onrender.com/api
 ```
+
+Подробный порядок деплоя описан в [docs/deploy.md](docs/deploy.md).
