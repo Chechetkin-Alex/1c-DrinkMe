@@ -13,6 +13,8 @@ services:
     buildCommand: ./build.sh
     startCommand: python manage.py migrate && python manage.py seed_demo && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DJANGO_DEBUG
@@ -28,8 +30,9 @@ services:
           name: drinkme-postgres
           property: connectionString
 
-  - type: static
+  - type: web
     name: drinkme-frontend
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
